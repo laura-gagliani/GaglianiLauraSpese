@@ -9,20 +9,20 @@ namespace Spese.MockRepository
 {
     internal class InMemoryStorage
     {
-        static List<User> Users = new List<User>()
+        public static List<User> Users = new List<User>()
         {
             new User() {Id = 1, Name = "Lorenzo", Surname = "Rossi"},
             new User() {Id = 2, Name = "Carla", Surname = "Donati"},
         };
 
-        static List<Category> Categories = new List<Category>()
+        public static List<Category> Categories = new List<Category>()
         {
             new Category() {Id = 1, Name = "Cibo"},
             new Category() {Id = 2, Name = "Casa"},
             new Category() {Id = 3, Name = "Salute"},
         };
 
-        static List<Expense> Expenses = new List<Expense>()
+        public static List<Expense> Expenses = new List<Expense>()
         {
             new Expense() {Id = 1, Date = new DateTime(2021, 11, 27),Description = "Spesa supermercato", Amount = 130.54m, Approved = false, CategoryId = 1, UserId = 1 },
             new Expense() {Id = 2, Date = new DateTime(2021, 11, 14),Description = "Spesa supermercato", Amount = 187.02m, Approved = true, CategoryId = 1, UserId = 1 },

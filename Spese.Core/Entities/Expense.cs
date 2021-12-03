@@ -15,5 +15,10 @@ namespace Spese.Core.Entities
         public bool Approved { get; set; } = false;
         public int CategoryId { get; set; }
         public int UserId { get; set; }
+
+        public override string ToString()
+        {
+            return $"Id: {Id} - Data: {Date.ToShortDateString()} - {Description}";
+        }
     }
 }

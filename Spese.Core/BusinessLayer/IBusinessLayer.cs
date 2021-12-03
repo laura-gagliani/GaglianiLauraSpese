@@ -9,6 +9,19 @@ namespace Spese.Core
 {
     public interface IBusinessLayer
     {
-        void AddExpense(Expense ex);
+        bool AddExpense(Expense ex);
+        List<User> GetAllUsers();
+        
+        User GetUserById(int userId);
+        Category GetCategoryById(int categId);
+
+        List<Category> GetAllCategories();
+        List<Expense> GetAllUnapprovedExpenses();
+        Expense GetExpenseById(int expenseId);
+
+        bool ApproveExpense(Expense ex);
+        List<Expense> GetApprovedExpensesFromLastMonth();
+        List<Expense> GetExpensesByUser(int searchedUserId);
+        decimal CalculateAmountByCategFromLastMonth(int categId);
     }
 }

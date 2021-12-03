@@ -22,7 +22,14 @@ namespace Spese.MockRepository
 
         public List<User> GetAll(Func<User, bool> filter = null)
         {
-            throw new NotImplementedException();
+            if (filter == null)
+            {
+                return InMemoryStorage.Users;
+            }
+            else
+            {
+                return InMemoryStorage.Users.Where(filter).ToList();
+            }
         }
 
         public User Update(User entity)

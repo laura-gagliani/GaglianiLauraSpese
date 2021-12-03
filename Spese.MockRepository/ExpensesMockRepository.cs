@@ -12,7 +12,10 @@ namespace Spese.MockRepository
     {
         public Expense Add(Expense entity)
         {
-            throw new NotImplementedException();
+            entity.Id = InMemoryStorage.Expenses.Max(i => i.Id) + 1;
+
+            InMemoryStorage.Expenses.Add(entity);
+            return entity;
         }
 
         public Expense Delete(Expense entity)
@@ -22,12 +25,23 @@ namespace Spese.MockRepository
 
         public List<Expense> GetAll(Func<Expense, bool> filter = null)
         {
-            throw new NotImplementedException();
+            if (filter == null)
+            {
+                return InMemoryStorage.Expenses;
+            }
+            else
+            {
+                return InMemoryStorage.Expenses.Where(filter).ToList();
+            }
         }
 
         public Expense Update(Expense entity)
         {
-            throw new NotImplementedException();
+            
+            Expense expToUpdate = InMemoryStorage.Expenses.Where(e => e.Id == entity.Id).SingleOrDefault();
+            expToUpdate.Approved = entity.Approved;
+
+            return expToUpdate;
         }
     }
 }

@@ -22,7 +22,14 @@ namespace Spese.MockRepository
 
         public List<Category> GetAll(Func<Category, bool> filter = null)
         {
-            throw new NotImplementedException();
+            if (filter == null)
+            {
+                return InMemoryStorage.Categories;
+            }
+            else
+            {
+                return InMemoryStorage.Categories.Where(filter).ToList();
+            }
         }
 
         public Category Update(Category entity)
