@@ -23,5 +23,8 @@ namespace Spese.Core
         List<Expense> GetApprovedExpensesFromLastMonth();
         List<Expense> GetExpensesByUser(int searchedUserId);
         decimal CalculateAmountByCategFromLastMonth(int categId);
+        List<Expense> GetAllExpensesFromMostRecent();
+        Expense GetApprovedExpenseById(int expenseId);
+        Dictionary<string, decimal> CalculateAmountsForAllCategFromLastMonth();
     }
 }

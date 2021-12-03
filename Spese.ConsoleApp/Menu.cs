@@ -24,11 +24,12 @@ namespace Spese.ConsoleApp
                 Console.WriteLine("[2] Approva una spesa");
                 Console.WriteLine("[3] Visualizza l'elenco delle spese approvate del mese passato");
                 Console.WriteLine("[4] Visualizza l'elenco delle spese per un utente");
-                Console.WriteLine("[5] Visualizza il totale (euro) delle spese per categoria del mese passato");
-                Console.WriteLine("[6] Visualizza tutte le spese a partire dalla più recente");
+                Console.WriteLine("[5] Visualizza il totale (euro) delle spese del mese passato per categoria");
+                Console.WriteLine("[6] Visualizza il totale (euro) delle spese del mese passato per per tutte le categorie");
+                Console.WriteLine("[7] Visualizza tutte le spese a partire dalla più recente");
                 Console.WriteLine("[0] Esci");
 
-                int choice = GetMenuInt(0, 6);
+                int choice = GetMenuInt(0, 7);
 
                 switch (choice)
                 {
@@ -52,7 +53,12 @@ namespace Spese.ConsoleApp
                         VisualizzaAmmontareDelMeseScorsoPerCategoria();
                         break;
                     case 6:
+                        VisualizzaAmmontareDelMeseScorsoPerTutteLeCategorie();
                         break;
+                    case 7:
+                        VisualizzaSpeseDallaPiuRecente();
+                        break;
+
 
                 }
 
@@ -62,19 +68,42 @@ namespace Spese.ConsoleApp
             } while (!quit);
         }
 
+        private static void VisualizzaAmmontareDelMeseScorsoPerTutteLeCategorie()
+        {
+            Dictionary<string, decimal> categorySums = bl.CalculateAmountsForAllCategFromLastMonth();
+
+            foreach (var item in categorySums)
+            {
+                Console.WriteLine($"Categoria {item.Key}: spesa di {item.Value} euro");
+            }
+        }
+
+        private static void VisualizzaSpeseDallaPiuRecente()
+        {
+            List<Expense> expenses = bl.GetAllExpensesFromMostRecent();
+
+            Console.WriteLine("\nLe spese in elenco sono:");
+            foreach (Expense expense in expenses)
+            {
+                Console.WriteLine(expense);
+            }
+        }
+
         private static void VisualizzaAmmontareDelMeseScorsoPerCategoria()
         {
-            int categId = SelezionaCategoria();
+            (int categId, string categName) = SelezionaCategoria();
             decimal sum = bl.CalculateAmountByCategFromLastMonth(categId);
 
-            Console.WriteLine($"La spesa ammonta a {sum} euro");
+            Console.WriteLine($"La spesa per la categoria {categName} ammonta a {sum} euro");
         }
 
         private static void VisualizzaSpesePerUtente()
         {
-            int searchedUserId = SelezionaUtente();
+            (int searchedUserId, string username) = SelezionaUtente();
 
             List<Expense> requestedExpenses = bl.GetExpensesByUser(searchedUserId);
+
+            Console.WriteLine($"\nLe spese registrate dall'utente {username} sono:");
             foreach (var item in requestedExpenses)
             {
                 Console.WriteLine(item);
@@ -107,7 +136,7 @@ namespace Spese.ConsoleApp
             do
             {
                 expenseId = GetInt();
-                e = bl.GetExpenseById(expenseId);
+                e = bl.GetApprovedExpenseById(expenseId);
                 if (e == null)
                 {
                     Console.WriteLine("\nId non in elenco! Inserisci un id corretto:");
@@ -152,7 +181,7 @@ namespace Spese.ConsoleApp
         {
             DateTime date = new DateTime();
             bool parse;
-            
+
             do
             {
                 parse = DateTime.TryParse(Console.ReadLine(), out date);
@@ -176,8 +205,12 @@ namespace Spese.ConsoleApp
         {
             Expense ex = new Expense();
 
-            ex.UserId = SelezionaUtente();
-            ex.CategoryId = SelezionaCategoria();
+            (ex.UserId, string username) = SelezionaUtente();
+            Console.WriteLine($"\nHai selezionato l'utente {username}");
+
+            (ex.CategoryId, string categName) = SelezionaCategoria();
+            Console.WriteLine($"\nHai selezionato la categoria {categName}");
+
 
             Console.Write("Data: ");
             ex.Date = GetPastDate();
@@ -200,7 +233,7 @@ namespace Spese.ConsoleApp
 
         }
 
-        private static int SelezionaCategoria()
+        private static (int, string) SelezionaCategoria()
         {
             Console.WriteLine("\nLe categorie in elenco sono:");
             List<Category> categories = bl.GetAllCategories();
@@ -224,10 +257,10 @@ namespace Spese.ConsoleApp
 
             } while (categById == null);
 
-            return categId;
+            return (categId, categById.Name);
         }
 
-        private static int SelezionaUtente()
+        private static (int, string) SelezionaUtente()
         {
             Console.WriteLine("\nGli utenti in elenco sono:");
             List<User> users = bl.GetAllUsers();
@@ -247,15 +280,16 @@ namespace Spese.ConsoleApp
                 {
                     Console.WriteLine("\nId non in elenco! Inserisci un id corretto:");
                 }
-               
+
 
             } while (userById == null);
 
-            return userId;
-            
+            string username = userById.Name + " " + userById.Surname;
+            return (userId, username);
 
 
-            
+
+
         }
     }
 }

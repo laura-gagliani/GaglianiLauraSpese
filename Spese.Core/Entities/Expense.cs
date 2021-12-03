@@ -18,7 +18,12 @@ namespace Spese.Core.Entities
 
         public override string ToString()
         {
-            return $"Id: {Id} - Data: {Date.ToShortDateString()} - {Description}";
+            string appr;
+            if (Approved)
+                appr = "Sì";
+            else
+                appr = "No";
+            return $"Id spesa: {Id} - Data: {Date.ToShortDateString()} - Approvata: {appr} - Descrizione: {Description} - Id utente: {UserId}";
         }
     }
 }

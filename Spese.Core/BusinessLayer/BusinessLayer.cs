@@ -32,7 +32,7 @@ namespace Spese.Core.BusinessLayer
 
         public bool ApproveExpense(Expense ex)
         {
-            ex.Approved = false;
+            ex.Approved = true;
             Expense returned = expensesRepository.Update(ex);
             if (returned == null)
                 return false;
@@ -69,9 +69,30 @@ namespace Spese.Core.BusinessLayer
 
         }
 
+        public Dictionary<string, decimal> CalculateAmountsForAllCategFromLastMonth()
+        {
+            List<int> categIds = expensesRepository.GetAll().Select(e => e.CategoryId).Distinct().ToList();
+
+            Dictionary<string, decimal> dictionary = new Dictionary<string, decimal>();
+
+            foreach (var item in categIds) 
+            {
+                Category category = GetCategoryById(item);
+                decimal sum = CalculateAmountByCategFromLastMonth(item);
+
+                dictionary.Add(category.Name, sum);
+            }
+            return dictionary;
+        }
+
         public List<Category> GetAllCategories()
         {
             return categoriesRepository.GetAll();
+        }
+
+        public List<Expense> GetAllExpensesFromMostRecent()
+        {
+            return expensesRepository.GetAll().OrderByDescending(e => e.Date).ToList();
         }
 
         public List<Expense> GetAllUnapprovedExpenses()
@@ -82,6 +103,11 @@ namespace Spese.Core.BusinessLayer
         public List<User> GetAllUsers()
         {
             return usersRepository.GetAll();
+        }
+
+        public Expense GetApprovedExpenseById(int expenseId)
+        {
+            return expensesRepository.GetAll(e => e.Approved == false && e.Id == expenseId).SingleOrDefault();
         }
 
         public List<Expense> GetApprovedExpensesFromLastMonth()
@@ -115,12 +141,15 @@ namespace Spese.Core.BusinessLayer
             return expensesRepository.GetAll(e => e.Id == expenseId).SingleOrDefault();
         }
 
+        
+
         public List<Expense> GetExpensesByUser(int searchedUserId)
         {
-            return expensesRepository.GetAll(e => e.Id == searchedUserId);
+            return expensesRepository.GetAll(e => e.UserId == searchedUserId);
         }
 
         public User GetUserById(int userId)
+
         {
             return usersRepository.GetAll(u => u.Id == userId).SingleOrDefault();
         }
