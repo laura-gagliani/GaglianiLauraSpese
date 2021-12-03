@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Spese.Core\Spese.Core.csproj" />
+    <ProjectReference Include="..\Spese.MockRepository\Spese.MockRepository.csproj" />
+  </ItemGroup>
+
 </Project>
